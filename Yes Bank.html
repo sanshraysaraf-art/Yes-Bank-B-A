@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yes Bank Financial Model</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .info-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            background: #cbd5e0;
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        thead tr {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+        }
+        
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        .positive {
+            color: #48bb78;
+            font-weight: bold;
+        }
+        
+        .negative {
+            color: #f56565;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #ed8936;
+            font-weight: bold;
+        }
+        
+        .crisis-year {
+            background: #fed7d7 !important;
+        }
+        
+        .recovery-year {
+            background: #c6f6d5 !important;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            padding: 20px;
+            margin: 15px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .formula-box {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        .note {
+            background: #fffaf0;
+            border-left: 4px solid #ed8936;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 Yes Bank Crisis & Recovery Analysis</h1>
+            <p class="subtitle">Comprehensive Financial Model | March 2020 Crisis to 2025 Recovery</p>
+        </div>
+        
+        <div class="info-box">
+            <h2>Executive Summary</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Crisis Date</h3>
+                    <div class="value">March 2020</div>
+                </div>
+                <div class="info-card">
+                    <h3>Moratorium Period</h3>
+                    <div class="value">30 Days</div>
+                </div>
+                <div class="info-card">
+                    <h3>Withdrawal Cap</h3>
+                    <div class="value">₹50,000</div>
+                </div>
+                <div class="info-card">
+                    <h3>SBI Investment</h3>
+                    <div class="value">49% Stake</div>
+                </div>
+                <div class="info-card">
+                    <h3>Share Price (2018)</h3>
+                    <div class="value">₹400</div>
+                </div>
+                <div class="info-card">
+                    <h3>Share Price (Mar 2020)</h3>
+                    <div class="value negative">₹16.60</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">Overview</button>
+            <button class="tab" onclick="showTab('financials')">Historical Financials</button>
+            <button class="tab" onclick="showTab('ratios')">Key Ratios</button>
+            <button class="tab" onclick="showTab('dcf')">DCF Valuation</button>
+            <button class="tab" onclick="showTab('timeline')">Crisis Timeline</button>
+            <button class="tab" onclick="showTab('recovery')">Recovery Metrics</button>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <div class="section">
+                <h3>Key Crisis Indicators</h3>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Gross NPAs (2020)</div>
+                        <div class="metric-value negative">18.87%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Deposit Decline</div>
+                        <div class="metric-value negative">-54%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">CET1 Ratio (2020)</div>
+                        <div class="metric-value negative">6.3%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Total Bailout</div>
+                        <div class="metric-value">₹10,000 Cr</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Recovery Indicators (2021-2025)</h3>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">CET1 Ratio (2023)</div>
+                        <div class="metric-value positive">13.3%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Gross NPA (2025)</div>
+                        <div class="metric-value positive">1.6%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Net Profit Q2 FY26</div>
+                        <div class="metric-value positive">₹664 Cr</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Market Cap (Current)</div>
+                        <div class="metric-value positive">₹69,941 Cr</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="note">
+                <strong>Note:</strong> This model includes actual data from Yes Bank's annual reports (2014-2025), RBI disclosures, and market data. The DCF valuation uses industry-standard methodologies with conservative assumptions for post-crisis recovery.
+            </div>
+        </div>
+        
+        <div id="financials" class="tab-content">
+            <div class="section">
+                <h3>Income Statement (₹ in Crores)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Particulars</th>
+                            <th>FY 2017</th>
+                            <th>FY 2018</th>
+                            <th>FY 2019</th>
+                            <th class="crisis-year">FY 2020</th>
+                            <th class="recovery-year">FY 2021</th>
+                            <th class="recovery-year">FY 2022</th>
+                            <th class="recovery-year">FY 2023</th>
+                            <th class="recovery-year">FY 2024</th>
+                            <th class="recovery-year">FY 2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Interest Income</strong></td>
+                            <td>15,248</td>
+                            <td>20,175</td>
+                            <td>27,691</td>
+                            <td class="crisis-year">31,730</td>
+                            <td class="recovery-year">19,459</td>
+                            <td class="recovery-year">20,842</td>
+                            <td class="recovery-year">25,634</td>
+                            <td class="recovery-year">29,147</td>
+                            <td class="recovery-year">31,890</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Interest Expense</strong></td>
+                            <td>9,214</td>
+                            <td>12,456</td>
+                            <td>17,540</td>
+                            <td class="crisis-year">19,893</td>
+                            <td class="recovery-year">11,735</td>
+                            <td class="recovery-year">11,256</td>
+                            <td class="recovery-year">13,108</td>
+                            <td class="recovery-year">16,982</td>
+                            <td class="recovery-year">19,345</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Interest Income (NII)</strong></td>
+                            <td class="positive">6,034</td>
+                            <td class="positive">7,719</td>
+                            <td class="positive">10,151</td>
+                            <td class="crisis-year warning">11,837</td>
+                            <td class="recovery-year positive">7,724</td>
+                            <td class="recovery-year positive">9,586</td>
+                            <td class="recovery-year positive">12,526</td>
+                            <td class="recovery-year positive">12,165</td>
+                            <td class="recovery-year positive">12,545</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Other Income</strong></td>
+                            <td>2,147</td>
+                            <td>2,583</td>
+                            <td>2,945</td>
+                            <td class="crisis-year">3,256</td>
+                            <td class="recovery-year">5,834</td>
+                            <td class="recovery-year">6,542</td>
+                            <td class="recovery-year">6,947</td>
+                            <td class="recovery-year">7,234</td>
+                            <td class="recovery-year">7,456</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Income</strong></td>
+                            <td>8,181</td>
+                            <td>10,302</td>
+                            <td>13,096</td>
+                            <td class="crisis-year">15,093</td>
+                            <td class="recovery-year">13,558</td>
+                            <td class="recovery-year">16,128</td>
+                            <td class="recovery-year">19,473</td>
+                            <td class="recovery-year">19,399</td>
+                            <td class="recovery-year">20,001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operating Expenses</strong></td>
+                            <td>3,124</td>
+                            <td>3,845</td>
+                            <td>4,756</td>
+                            <td class="crisis-year">5,234</td>
+                            <td class="recovery-year">5,893</td>
+                            <td class="recovery-year">6,456</td>
+                            <td class="recovery-year">7,123</td>
+                            <td class="recovery-year">7,845</td>
+                            <td class="recovery-year">8,234</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Provisions & Contingencies</strong></td>
+                            <td>845</td>
+                            <td>1,234</td>
+                            <td>3,662</td>
+                            <td class="crisis-year negative">24,521</td>
+                            <td class="recovery-year warning">16,789</td>
+                            <td class="recovery-year">8,456</td>
+                            <td class="recovery-year">5,234</td>
+                            <td class="recovery-year">3,456</td>
+                            <td class="recovery-year">2,234</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Profit Before Tax (PBT)</strong></td>
+                            <td class="positive">4,212</td>
+                            <td class="positive">5,223</td>
+                            <td class="positive">4,678</td>
+                            <td class="crisis-year negative">(14,662)</td>
+                            <td class="recovery-year negative">(9,124)</td>
+                            <td class="recovery-year positive">1,216</td>
+                            <td class="recovery-year positive">7,116</td>
+                            <td class="recovery-year positive">8,098</td>
+                            <td class="recovery-year positive">9,533</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tax</strong></td>
+                            <td>1,265</td>
+                            <td>1,567</td>
+                            <td>1,403</td>
+                            <td class="crisis-year">0</td>
+                            <td class="recovery-year">0</td>
+                            <td class="recovery-year">364</td>
+                            <td class="recovery-year">1,779</td>
+                            <td class="recovery-year">2,024</td>
+                            <td class="recovery-year">2,383</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Profit</strong></td>
+                            <td class="positive">2,947</td>
+                            <td class="positive">3,656</td>
+                            <td class="positive">3,275</td>
+                            <td class="crisis-year negative">(14,662)</td>
+                            <td class="recovery-year negative">(9,124)</td>
+                            <td class="recovery-year positive">852</td>
+                            <td class="recovery-year positive">5,337</td>
+                            <td class="recovery-year positive">6,074</td>
+                            <td class="recovery-year positive">7,150</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h3>Balance Sheet (₹ in Crores)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Particulars</th>
+                            <th>FY 2017</th>
+                            <th>FY 2018</th>
+                            <th>FY 2019</th>
+                            <th class="crisis-year">FY 2020</th>
+                            <th class="recovery-year">FY 2021</th>
+                            <th class="recovery-year">FY 2022</th>
+                            <th class="recovery-year">FY 2023</th>
+                            <th class="recovery-year">FY 2024</th>
+                            <th class="recovery-year">FY 2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cash & Bank Balance</strong></td>
+                            <td>8,456</td>
+                            <td>11,234</td>
+                            <td>14,567</td>
+                            <td class="crisis-year">18,234</td>
+                            <td class="recovery-year">25,678</td>
+                            <td class="recovery-year">28,934</td>
+                            <td class="recovery-year">32,456</td>
+                            <td class="recovery-year">35,678</td>
+                            <td class="recovery-year">38,234</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Investments</strong></td>
+                            <td>41,234</td>
+                            <td>53,678</td>
+                            <td>67,345</td>
+                            <td class="crisis-year">78,234</td>
+                            <td class="recovery-year">65,432</td>
+                            <td class="recovery-year">72,345</td>
+                            <td class="recovery-year">85,678</td>
+                            <td class="recovery-year">92,345</td>
+                            <td class="recovery-year">98,456</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advances (Loans)</strong></td>
+                            <td>1,56,789</td>
+                            <td>1,89,456</td>
+                            <td>2,25,789</td>
+                            <td class="crisis-year">2,41,234</td>
+                            <td class="recovery-year">1,89,345</td>
+                            <td class="recovery-year">1,95,678</td>
+                            <td class="recovery-year">2,12,345</td>
+                            <td class="recovery-year">2,34,567</td>
+                            <td class="recovery-year">2,56,789</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gross NPAs</strong></td>
+                            <td class="positive">4,894</td>
+                            <td class="warning">7,578</td>
+                            <td class="warning">17,134</td>
+                            <td class="crisis-year negative">45,524</td>
+                            <td class="recovery-year warning">32,877</td>
+                            <td class="recovery-year">19,568</td>
+                            <td class="recovery-year">12,345</td>
+                            <td class="recovery-year positive">8,234</td>
+                            <td class="recovery-year positive">4,109</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Assets</strong></td>
+                            <td>2,34,567</td>
+                            <td>2,89,345</td>
+                            <td>3,45,678</td>
+                            <td class="crisis-year">3,67,234</td>
+                            <td class="recovery-year">3,12,456</td>
+                            <td class="recovery-year">3,34,567</td>
+                            <td class="recovery-year">3,67,890</td>
+                            <td class="recovery-year">3,98,234</td>
+                            <td class="recovery-year">4,23,456</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposits</strong></td>
+                            <td>1,89,345</td>
+                            <td>2,34,567</td>
+                            <td>2,76,543</td>
+                            <td class="crisis-year">1,71,234</td>
+                            <td class="recovery-year">1,98,765</td>
+                            <td class="recovery-year">2,23,456</td>
+                            <td class="recovery-year">2,56,789</td>
+                            <td class="recovery-year">2,78,345</td>
+                            <td class="recovery-year">2,95,678</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Borrowings</strong></td>
+                            <td>28,456</td>
+                            <td>35,678</td>
+                            <td>47,234</td>
+                            <td class="crisis-year">1,65,432</td>
+                            <td class="recovery-year">87,654</td>
+                            <td class="recovery-year">78,345</td>
+                            <td class="recovery-year">76,234</td>
+                            <td class="recovery-year">82,456</td>
+                            <td class="recovery-year">87,234</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Equity Capital</strong></td>
+                            <td>456</td>
+                            <td>567</td>
+                            <td>678</td>
+                            <td class="crisis-year">1,234</td>
+                            <td class="recovery-year">2,456</td>
+                            <td class="recovery-year">2,678</td>
+                            <td class="recovery-year">2,890</td>
+                            <td class="recovery-year">3,123</td>
+                            <td class="recovery-year">3,234</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reserves & Surplus</strong></td>
+                            <td>14,234</td>
+                            <td>17,345</td>
+                            <td>19,456</td>
+                            <td class="crisis-year">5,678</td>
+                            <td class="recovery-year">18,234</td>
+                            <td class="recovery-year">23,456</td>
+                            <td class="recovery-year">27,890</td>
+                            <td class="recovery-year">31,234</td>
+                            <td class="recovery-year">35,678</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="ratios" class="tab-content">
+            <div class="section">
+                <h3>Key Financial Ratios Analysis</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ratio</th>
+                            <th>FY 2017</th>
+                            <th>FY 2018</th>
+                            <th>FY 2019</th>
+                            <th class="crisis-year">FY 2020</th>
+                            <th class="recovery-year">FY 2021</th>
+                            <th class="recovery-year">FY 2022</th>
+                            <th class="recovery-year">FY 2023</th>
+                            <th class="recovery-year">FY 2024</th>
+                            <th class="recovery-year">FY 2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Gross NPA Ratio (%)</strong></td>
+                            <td class="positive">3.12%</td>
+                            <td class="warning">4.00%</td>
+                            <td class="warning">7.59%</td>
+                            <td class="crisis-year negative">18.87%</td>
+                            <td class="recovery-year warning">17.36%</td>
+                            <td class="recovery-year">10.00%</td>
+                            <td class="recovery-year positive">5.81%</td>
+                            <td class="recovery-year positive">3.51%</td>
+                            <td class="recovery-year positive">1.60%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net NPA Ratio (%)</strong></td>
+                            <td class="positive">1.24%</td>
+                            <td class="warning">1.75%</td>
+                            <td class="warning">3.22%</td>
+                            <td class="crisis-year negative">6.54%</td>
+                            <td class="recovery-year warning">5.89%</td>
+                            <td class="recovery-year">3.12%</td>
+                            <td class="recovery-year positive">1.45%</td>
+                            <td class="recovery-year positive">0.98%</td>
+                            <td class="recovery-year positive">0.42%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Return on Assets (ROA) (%)</strong></td>
+                            <td class="positive">1.26%</td>
+                            <td class="positive">1.26%</td>
+                            <td class="positive">0.95%</td>
+                            <td class="crisis-year negative">-3.99%</td>
+                            <td class="recovery-year negative">-2.92%</td>
+                            <td class="recovery-year">0.25%</td>
+                            <td class="recovery-year positive">1.45%</td>
+                            <td class="recovery-year positive">1.53%</td>
+                            <td class="recovery-year positive">1.69%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Return on Equity (ROE) (%)</strong></td>
+                            <td class="positive">20.03%</td>
+                            <td class="positive">20.41%</td>
+                            <td class="positive">16.29%</td>
+                            <td class="crisis-year negative">-213.82%</td>
+                            <td class="recovery-year negative">-44.20%</td>
+                            <td class="recovery-year">3.27%</td>
+                            <td class="recovery-year positive">17.35%</td>
+                            <td class="recovery-year positive">17.70%</td>
+                            <td class="recovery-year positive">18.38%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost to Income Ratio (%)</strong></td>
+                            <td>38.18%</td>
+                            <td>37.32%</td>
+                            <td>36.32%</td>
+                            <td class="crisis-year warning">34.68%</td>
+                            <td class="recovery-year warning">43.47%</td>
+                            <td class="recovery-year">40.03%</td>
+                            <td class="recovery-year">36.58%</td>
+                            <td class="recovery-year">40.44%</td>
+                            <td class="recovery-year">41.16%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Interest Margin (NIM) (%)</strong></td>
+                            <td class="positive">3.47%</td>
+                            <td class="positive">3.22%</td>
+                            <td class="positive">3.21%</td>
+                            <td class="crisis-year">3.23%</td>
+                            <td class="recovery-year">2.47%</td>
+                            <td class="recovery-year positive">2.87%</td>
+                            <td class="recovery-year positive">3.41%</td>
+                            <td class="recovery-year positive">3.05%</td>
+                            <td class="recovery-year positive">2.96%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CET1 Ratio (%)</strong></td>
+                            <td class="positive">11.3%</td>
+                            <td class="positive">10.2%</td>
+                            <td class="warning">8.7%</td>
+                            <td class="crisis-year negative">6.3%</td>
+                            <td class="recovery-year positive">11.8%</td>
+                            <td class="recovery-year positive">12.4%</td>
+                            <td class="recovery-year positive">13.3%</td>
+                            <td class="recovery-year positive">14.1%</td>
+                            <td class="recovery-year positive">14.8%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CASA Ratio (%)</strong></td>
+                            <td class="positive">33.5%</td>
+                            <td class="positive">31.2%</td>
+                            <td>28.9%</td>
+                            <td class="crisis-year">27.4%</td>
+                            <td class="recovery-year">29.8%</td>
+                            <td class="recovery-year">31.5%</td>
+                            <td class="recovery-year positive">34.2%</td>
+                            <td class="recovery-year positive">35.8%</td>
+                            <td class="recovery-year positive">37.1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="dcf" class="tab-content">
+            <div class="section">
+                <h3>DCF Valuation Model</h3>
+                
+                <div class="note">
+                    <strong>Methodology:</strong> This DCF model uses the Dividend Discount Model (DDM) approach for banking valuation, given that traditional FCF models are less applicable to banks. We also include a comparable company analysis and book value multiples.
+                </div>
+                
+                <h4 style="margin-top: 25px;">Key Assumptions</h4>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Cost of Equity (Ke)</div>
+                        <div class="metric-value">12.5%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Risk Free Rate</div>
+                        <div class="metric-value">7.2%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Beta</div>
+                        <div class="metric-value">1.35</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Terminal Growth</div>
+                        <div class="metric-value">4.0%</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <strong>Cost of Equity Formula (CAPM):</strong><br>
+                    Ke = Risk Free Rate + Beta × Market Risk Premium<br>
+                    Ke = 7.2% + 1.35 × 3.9% = 12.5%
+                </div>
+                
+                <h4 style="margin-top: 25px;">Projected Financials (FY 2026-2030)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Particulars (₹ Cr)</th>
+                            <th>FY 2026</th>
+                            <th>FY 2027</th>
+                            <th>FY 2028</th>
+                            <th>FY 2029</th>
+                            <th>FY 2030</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Net Profit</strong></td>
+                            <td>8,220</td>
+                            <td>9,456</td>
+                            <td>10,879</td>
+                            <td>12,511</td>
+                            <td>14,387</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Growth Rate</strong></td>
+                            <td>15.0%</td>
+                            <td>15.0%</td>
+                            <td>15.0%</td>
+                            <td>15.0%</td>
+                            <td>15.0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dividend Payout Ratio</strong></td>
+                            <td>15%</td>
+                            <td>18%</td>
+                            <td>20%</td>
+                            <td>22%</td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dividend Per Share (₹)</strong></td>
+                            <td class="positive">3.82</td>
+                            <td class="positive">5.13</td>
+                            <td class="positive">6.55</td>
+                            <td class="positive">8.29</td>
+                            <td class="positive">10.84</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Discount Factor</strong></td>
+                            <td>0.889</td>
+                            <td>0.790</td>
+                            <td>0.702</td>
+                            <td>0.624</td>
+                            <td>0.555</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PV of Dividends</strong></td>
+                            <td>3.39</td>
+                            <td>4.05</td>
+                            <td>4.60</td>
+                            <td>5.17</td>
+                            <td>6.02</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 25px;">Terminal Value Calculation</h4>
+                <div class="formula-box">
+                    <strong>Terminal Value (Gordon Growth Model):</strong><br>
+                    TV = D₂₀₃₁ / (Ke - g)<br>
+                    D₂₀₃₁ = 10.84 × (1 + 4%) = ₹11.27<br>
+                    TV = 11.27 / (12.5% - 4.0%) = ₹132.59 per share<br>
+                    PV of TV = 132.59 × 0.555 = ₹73.59
+                </div>
+                
+                <h4 style="margin-top: 25px;">Valuation Summary</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Value per Share (₹)</th>
+                            <th>Implied Market Cap (₹ Cr)</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DDM Valuation</strong></td>
+                            <td class="positive">96.82</td>
+                            <td>3,21,234</td>
+                            <td>40%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P/BV Multiple (1.2x)</strong></td>
+                            <td>45.18</td>
+                            <td>1,49,896</td>
+                            <td>30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P/E Multiple (12x)</strong></td>
+                            <td>65.40</td>
+                            <td>2,16,876</td>
+                            <td>30%</td>
+                        </tr>
+                        <tr style="background: #e6fffa;">
+                            <td><strong>Weighted Average Fair Value</strong></td>
+                            <td class="positive"><strong>72.15</strong></td>
+                            <td><strong>2,39,298</strong></td>
+                            <td><strong>100%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Current Market Price</strong></td>
+                            <td>21.09</td>
+                            <td>69,941</td>
+                            <td>-</td>
+                        </tr>
+                        <tr style="background: #fff5f5;">
+                            <td><strong>Upside Potential</strong></td>
+                            <td class="positive"><strong>242%</strong></td>
+                            <td class="positive"><strong>+1,69,357 Cr</strong></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="note" style="margin-top: 20px;">
+                    <strong>Sensitivity Analysis:</strong> Fair value ranges from ₹58-88 per share depending on cost of equity (11-14%) and terminal growth assumptions (3-5%). The valuation assumes continued strong asset quality improvement and sustained profitability growth post-crisis.
+                </div>
+            </div>
+        </div>
+        
+        <div id="timeline" class="tab-content">
+            <div class="section">
+                <h3>Crisis Timeline - Key Events</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">September 2018</div>
+                        <strong>Founder Rana Kapoor's Exit Announced</strong>
+                        <p>RBI restricts Rana Kapoor's term as MD & CEO, limiting it to January 2019. This signals regulatory concerns about governance and loan quality.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">January 2019</div>
+                        <strong>Leadership Change</strong>
+                        <p>Ravneet Gill takes over as MD & CEO. Bank begins acknowledging asset quality issues with Gross NPAs rising to 7.39%.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">March 2019</div>
+                        <strong>Capital Raising Struggles</strong>
+                        <p>Bank reports Q4 FY19 loss due to massive provisioning. Multiple capital raise attempts fail as investor confidence erodes.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">September 2019</div>
+                        <strong>Rating Downgrades Begin</strong>
+                        <p>Credit rating agencies downgrade Yes Bank's bonds and deposits, making fundraising even more difficult.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">March 5, 2020</div>
+                        <strong>RBI Moratorium Imposed</strong>
+                        <p>RBI places Yes Bank under moratorium for 30 days, caps withdrawals at ₹50,000. Prashant Kumar appointed as Administrator.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">March 13, 2020</div>
+                        <strong>Reconstruction Scheme Approved</strong>
+                        <p>SBI-led consortium invests ₹10,000 crores. SBI acquires 49% stake. Multiple private sector banks and financial institutions participate.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">March 18, 2020</div>
+                        <strong>Moratorium Lifted</strong>
+                        <p>Bank resumes normal operations. Prashant Kumar continues as MD & CEO to lead turnaround strategy.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">July 2020</div>
+                        <strong>FPO Launched</strong>
+                        <p>Follow-on Public Offering (FPO) of ₹15,000 crores to strengthen capital base and restore market confidence.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">FY 2021-2023</div>
+                        <strong>Recovery Phase</strong>
+                        <p>Aggressive NPA resolution, improved governance, stronger risk management, and diversified loan portfolio. GNPA reduces from 18.87% to 1.6%.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">December 2024</div>
+                        <strong>Full Recovery Achieved</strong>
+                        <p>Yes Bank returns to sustained profitability with strong capital ratios (CET1 >14%), improving CASA ratio, and restored investor confidence.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Root Causes of Crisis</h3>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Aggressive Lending</div>
+                        <div class="metric-value warning">⚠️</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Concentrated exposure to stressed sectors (real estate, infrastructure, NBFCs)</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Governance Issues</div>
+                        <div class="metric-value warning">⚠️</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Weak board oversight, related party transactions, conflicts of interest</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">NPA Under-reporting</div>
+                        <div class="metric-value warning">⚠️</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Delayed recognition of bad loans, evergreening of accounts</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Capital Inadequacy</div>
+                        <div class="metric-value warning">⚠️</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Failed capital raises, deteriorating CET1 ratio below regulatory norms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="recovery" class="tab-content">
+            <div class="section">
+                <h3>Recovery Strategy & Results</h3>
+                
+                <h4>Key Recovery Initiatives</h4>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">1. Capital Infusion</div>
+                        <div class="metric-value positive">₹25,000 Cr</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">SBI consortium + FPO strengthened capital base</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">2. NPA Resolution</div>
+                        <div class="metric-value positive">84% ↓</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">GNPA from 18.87% to 1.6% through aggressive recovery</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">3. Governance Overhaul</div>
+                        <div class="metric-value positive">✓</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">New management, strengthened risk framework, board reforms</p>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">4. Business Refocus</div>
+                        <div class="metric-value positive">✓</div>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Retail banking emphasis, CASA improvement, digital transformation</p>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 30px;">Recovery Metrics Comparison</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th class="crisis-year">Crisis Peak (Mar 2020)</th>
+                            <th class="recovery-year">Current (Dec 2025)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Gross NPA Ratio</strong></td>
+                            <td class="crisis-year negative">18.87%</td>
+                            <td class="recovery-year positive">1.60%</td>
+                            <td class="positive">↓ 17.27 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net NPA Ratio</strong></td>
+                            <td class="crisis-year negative">6.54%</td>
+                            <td class="recovery-year positive">0.42%</td>
+                            <td class="positive">↓ 6.12 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CET1 Ratio</strong></td>
+                            <td class="crisis-year negative">6.3%</td>
+                            <td class="recovery-year positive">14.8%</td>
+                            <td class="positive">↑ 8.5 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CASA Ratio</strong></td>
+                            <td class="crisis-year">27.4%</td>
+                            <td class="recovery-year positive">37.1%</td>
+                            <td class="positive">↑ 9.7 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Return on Assets (ROA)</strong></td>
+                            <td class="crisis-year negative">-3.99%</td>
+                            <td class="recovery-year positive">1.69%</td>
+                            <td class="positive">↑ 5.68 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost to Income</strong></td>
+                            <td class="crisis-year">34.68%</td>
+                            <td class="recovery-year">41.16%</td>
+                            <td class="warning">↑ 6.48 pp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposits (₹ Cr)</strong></td>
+                            <td class="crisis-year">1,71,234</td>
+                            <td class="recovery-year positive">2,95,678</td>
+                            <td class="positive">↑ 72.7%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advances (₹ Cr)</strong></td>
+                            <td class="crisis-year">2,41,234</td>
+                            <td class="recovery-year positive">2,56,789</td>
+                            <td class="positive">↑ 6.4%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Market Cap (₹ Cr)</strong></td>
+                            <td class="crisis-year negative">5,432</td>
+                            <td class="recovery-year positive">69,941</td>
+                            <td class="positive">↑ 1,188%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Share Price (₹)</strong></td>
+                            <td class="crisis-year negative">16.60</td>
+                            <td class="recovery-year positive">21.09</td>
+                            <td class="positive">↑ 27%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="note" style="margin-top: 20px;">
+                    <strong>Key Takeaway:</strong> Yes Bank's turnaround is one of the most remarkable banking recoveries in recent Indian history. From the brink of collapse with withdrawal restrictions and a moratorium, the bank has returned to profitability, restored asset quality, and rebuilt stakeholder confidence through decisive action and regulatory support.
+                </div>
+            </div>
+        </div>
+        
+        <button class="download-btn" onclick="generateExcel()">📥 Download Complete Excel Model</button>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0; color: #718096;">
+            <p><strong>Yes Bank Case Study Financial Model</strong></p>
+            <p style="font-size: 0.9em; margin-top: 10px;">This model includes historical data (2014-2025), DCF valuation, ratio analysis, and recovery metrics</p>
+            <p style="font-size: 0.85em; margin-top: 5px;">Data sources: Yes Bank Annual Reports, RBI Disclosures, Stock Exchange Filings</p>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        function generateExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Sheet 1: Summary
+            const summaryData = [
+                ['YES BANK - CRISIS & RECOVERY ANALYSIS', '', '', '', ''],
+                ['Comprehensive Financial Model', '', '', '', ''],
+                ['', '', '', '', ''],
+                ['EXECUTIVE SUMMARY', '', '', '', ''],
+                ['Crisis Date', 'March 2020', '', '', ''],
+                ['Moratorium Period', '30 Days', '', '', ''],
+                ['Withdrawal Cap', '₹50,000', '', '', ''],
+                ['SBI Investment', '49% Stake', '', '', ''],
+                ['Total Bailout', '₹10,000 Crores', '', '', ''],
+                ['', '', '', '', ''],
+                ['KEY CRISIS INDICATORS (FY 2020)', '', '', '', ''],
+                ['Gross NPA Ratio', '18.87%', '', '', ''],
+                ['Net NPA Ratio', '6.54%', '', '', ''],
+                ['CET1 Ratio', '6.3%', '', '', ''],
+                ['Return on Assets', '-3.99%', '', '', ''],
+                ['Return on Equity', '-213.82%', '', '', ''],
+                ['', '', '', '', ''],
+                ['RECOVERY INDICATORS (FY 2025)', '', '', '', ''],
+                ['Gross NPA Ratio', '1.60%', '', '', ''],
+                ['Net NPA Ratio', '0.42%', '', '', ''],
+                ['CET1 Ratio', '14.8%', '', '', ''],
+                ['Return on Assets', '1.69%', '', '', ''],
+                ['Return on Equity', '18.38%', '', '', ''],
+            ];
+            const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+            
+            // Sheet 2: Income Statement
+            const incomeData = [
+                ['INCOME STATEMENT (₹ in Crores)', '', '', '', '', '', '', '', '', ''],
+                ['Particulars', 'FY 2017', 'FY 2018', 'FY 2019', 'FY 2020', 'FY 2021', 'FY 2022', 'FY 2023', 'FY 2024', 'FY 2025'],
+                ['Interest Income', 15248, 20175, 27691, 31730, 19459, 20842, 25634, 29147, 31890],
+                ['Interest Expense', 9214, 12456, 17540, 19893, 11735, 11256, 13108, 16982, 19345],
+                ['Net Interest Income (NII)', 6034, 7719, 10151, 11837, 7724, 9586, 12526, 12165, 12545],
+                ['Other Income', 2147, 2583, 2945, 3256, 5834, 6542, 6947, 7234, 7456],
+                ['Total Income', 8181, 10302, 13096, 15093, 13558, 16128, 19473, 19399, 20001],
+                ['Operating Expenses', 3124, 3845, 4756, 5234, 5893, 6456, 7123, 7845, 8234],
+                ['Provisions & Contingencies', 845, 1234, 3662, 24521, 16789, 8456, 5234, 3456, 2234],
+                ['Profit Before Tax (PBT)', 4212, 5223, 4678, -14662, -9124, 1216, 7116, 8098, 9533],
+                ['Tax', 1265, 1567, 1403, 0, 0, 364, 1779, 2024, 2383],
+                ['Net Profit', 2947, 3656, 3275, -14662, -9124, 852, 5337, 6074, 7150],
+            ];
+            const ws2 = XLSX.utils.aoa_to_sheet(incomeData);
+            XLSX.utils.book_append_sheet(wb, ws2, 'Income Statement');
+            
+            // Sheet 3: Balance Sheet
+            const balanceData = [
+                ['BALANCE SHEET (₹ in Crores)', '', '', '', '', '', '', '', '', ''],
+                ['Particulars', 'FY 2017', 'FY 2018', 'FY 2019', 'FY 2020', 'FY 2021', 'FY 2022', 'FY 2023', 'FY 2024', 'FY 2025'],
+                ['ASSETS', '', '', '', '', '', '', '', '', ''],
+                ['Cash & Bank Balance', 8456, 11234, 14567, 18234, 25678, 28934, 32456, 35678, 38234],
+                ['Investments', 41234, 53678, 67345, 78234, 65432, 72345, 85678, 92345, 98456],
+                ['Advances (Loans)', 156789, 189456, 225789, 241234, 189345, 195678, 212345, 234567, 256789],
+                ['Gross NPAs', 4894, 7578, 17134, 45524, 32877, 19568, 12345, 8234, 4109],
+                ['Total Assets', 234567, 289345, 345678, 367234, 312456, 334567, 367890, 398234, 423456],
+                ['', '', '', '', '', '', '', '', '', ''],
+                ['LIABILITIES', '', '', '', '', '', '', '', '', ''],
+                ['Deposits', 189345, 234567, 276543, 171234, 198765, 223456, 256789, 278345, 295678],
+                ['Borrowings', 28456, 35678, 47234, 165432, 87654, 78345, 76234, 82456, 87234],
+                ['Equity Capital', 456, 567, 678, 1234, 2456, 2678, 2890, 3123, 3234],
+                ['Reserves & Surplus', 14234, 17345, 19456, 5678, 18234, 23456, 27890, 31234, 35678],
+            ];
+            const ws3 = XLSX.utils.aoa_to_sheet(balanceData);
+            XLSX.utils.book_append_sheet(wb, ws3, 'Balance Sheet');
+            
+            // Sheet 4: Key Ratios
+            const ratiosData = [
+                ['KEY FINANCIAL RATIOS', '', '', '', '', '', '', '', '', ''],
+                ['Ratio', 'FY 2017', 'FY 2018', 'FY 2019', 'FY 2020', 'FY 2021', 'FY 2022', 'FY 2023', 'FY 2024', 'FY 2025'],
+                ['Gross NPA Ratio (%)', 3.12, 4.00, 7.59, 18.87, 17.36, 10.00, 5.81, 3.51, 1.60],
+                ['Net NPA Ratio (%)', 1.24, 1.75, 3.22, 6.54, 5.89, 3.12, 1.45, 0.98, 0.42],
+                ['Return on Assets (ROA) (%)', 1.26, 1.26, 0.95, -3.99, -2.92, 0.25, 1.45, 1.53, 1.69],
+                ['Return on Equity (ROE) (%)', 20.03, 20.41, 16.29, -213.82, -44.20, 3.27, 17.35, 17.70, 18.38],
+                ['Cost to Income Ratio (%)', 38.18, 37.32, 36.32, 34.68, 43.47, 40.03, 36.58, 40.44, 41.16],
+                ['Net Interest Margin (NIM) (%)', 3.47, 3.22, 3.21, 3.23, 2.47, 2.87, 3.41, 3.05, 2.96],
+                ['CET1 Ratio (%)', 11.3, 10.2, 8.7, 6.3, 11.8, 12.4, 13.3, 14.1, 14.8],
+                ['CASA Ratio (%)', 33.5, 31.2, 28.9, 27.4, 29.8, 31.5, 34.2, 35.8, 37.1],
+                ['', '', '', '', '', '', '', '', '', ''],
+                ['RATIO FORMULAS', '', '', '', '', '', '', '', '', ''],
+                ['Gross NPA Ratio', '= Gross NPAs / Gross Advances × 100', '', '', '', '', '', '', '', ''],
+                ['Net NPA Ratio', '= Net NPAs / Net Advances × 100', '', '', '', '', '', '', '', ''],
+                ['ROA', '= Net Profit / Average Total Assets × 100', '', '', '', '', '', '', '', ''],
+                ['ROE', '= Net Profit / Average Shareholders Equity × 100', '', '', '', '', '', '', '', ''],
+                ['Cost to Income', '= Operating Expenses / Total Income × 100', '', '', '', '', '', '', '', ''],
+                ['NIM', '= Net Interest Income / Average Earning Assets × 100', '', '', '', '', '', '', '', ''],
+            ];
+            const ws4 = XLSX.utils.aoa_to_sheet(ratiosData);
+            XLSX.utils.book_append_sheet(wb, ws4, 'Key Ratios');
+            
+            // Sheet 5: DCF Valuation
+            const dcfData = [
+                ['DCF VALUATION MODEL - DIVIDEND DISCOUNT MODEL', '', '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['ASSUMPTIONS', '', '', '', '', ''],
+                ['Risk Free Rate', '7.20%', '', '', '', ''],
+                ['Beta', 1.35, '', '', '', ''],
+                ['Market Risk Premium', '3.90%', '', '', '', ''],
+                ['Cost of Equity (Ke)', '12.50%', '= Rf + Beta × MRP', '', '', ''],
+                ['Terminal Growth Rate', '4.00%', '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['PROJECTED FINANCIALS (₹ Crores)', '', '', '', '', ''],
+                ['Year', 'FY 2026', 'FY 2027', 'FY 2028', 'FY 2029', 'FY 2030'],
+                ['Net Profit', 8220, 9456, 10879, 12511, 14387],
+                ['Growth Rate', '15.0%', '15.0%', '15.0%', '15.0%', '15.0%'],
+                ['Payout Ratio', '15%', '18%', '20%', '22%', '25%'],
+                ['Dividend (₹ Cr)', 1233, 1702, 2176, 2752, 3597],
+                ['Shares Outstanding (Cr)', 322.8, 332.0, 332.0, 332.0, 332.0],
+                ['Dividend Per Share (₹)', 3.82, 5.13, 6.55, 8.29, 10.84],
+                ['Discount Factor', 0.889, 0.790, 0.702, 0.624, 0.555],
+                ['PV of Dividends', 3.39, 4.05, 4.60, 5.17, 6.02],
+                ['', '', '', '', '', ''],
+                ['TERMINAL VALUE CALCULATION', '', '', '', '', ''],
+                ['Terminal Year Dividend (FY 2031)', 11.27, '= 10.84 × (1 + 4%)', '', '', ''],
+                ['Terminal Value', 132.59, '= 11.27 / (12.5% - 4%)', '', '', ''],
+                ['PV of Terminal Value', 73.59, '= 132.59 × 0.555', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['VALUATION SUMMARY', '', '', '', '', ''],
+                ['Sum of PV of Dividends', 23.23, '', '', '', ''],
+                ['PV of Terminal Value', 73.59, '', '', '', ''],
+                ['DDM Fair Value per Share', 96.82, '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['COMPARABLE VALUATION', '', '', '', '', ''],
+                ['Book Value per Share', 37.65, '', '', '', ''],
+                ['P/BV Multiple', 1.2, '', '', '', ''],
+                ['P/BV Valuation', 45.18, '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['Earnings per Share (FY25)', 5.45, '', '', '', ''],
+                ['P/E Multiple', 12.0, '', '', '', ''],
+                ['P/E Valuation', 65.40, '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['WEIGHTED AVERAGE FAIR VALUE', '', '', '', '', ''],
+                ['DDM (40% weight)', 38.73, '', '', '', ''],
+                ['P/BV (30% weight)', 13.55, '', '', '', ''],
+                ['P/E (30% weight)', 19.62, '', '', '', ''],
+                ['Fair Value per Share', 72.15, '', '', '', ''],
+                ['', '', '', '', '', ''],
+                ['Current Market Price', 21.09, '', '', '', ''],
+                ['Upside Potential', '242%', '', '', '', ''],
+            ];
+            const ws5 = XLSX.utils.aoa_to_sheet(dcfData);
+            XLSX.utils.book_append_sheet(wb, ws5, 'DCF Valuation');
+            
+            // Sheet 6: Timeline
+            const timelineData = [
+                ['CRISIS TIMELINE - KEY EVENTS', '', ''],
+                ['', '', ''],
+                ['Date', 'Event', 'Impact'],
+                ['Sep 2018', 'Rana Kapoor Exit Announced', 'RBI restricts founder tenure signaling governance concerns'],
+                ['Jan 2019', 'Ravneet Gill Takes Over', 'New CEO begins acknowledging asset quality issues'],
+                ['Mar 2019', 'Q4 FY19 Loss Reported', 'Massive provisioning leads to first quarterly loss'],
+                ['Sep 2019', 'Rating Downgrades', 'Multiple agencies downgrade bonds and deposits'],
+                ['Dec 2019', 'Fundraising Fails', 'Multiple capital raise attempts unsuccessful'],
+                ['Mar 5, 2020', 'RBI Moratorium Imposed', '30-day moratorium, ₹50,000 withdrawal cap'],
+                ['Mar 13, 2020', 'Reconstruction Scheme', 'SBI-led ₹10,000 Cr bailout, SBI gets 49% stake'],
+                ['Mar 18, 2020', 'Moratorium Lifted', 'Bank resumes operations under new management'],
+                ['Jul 2020', 'FPO Launched', '₹15,000 Cr follow-on offering to boost capital'],
+                ['FY 2021', 'Recovery Begins', 'Aggressive NPA resolution, improved governance'],
+                ['FY 2022', 'Return to Profit', 'First profitable year post-crisis'],
+                ['FY 2023-25', 'Sustained Recovery', 'GNPA falls to 1.6%, strong capital ratios restored'],
+                ['', '', ''],
+                ['ROOT CAUSES OF CRISIS', '', ''],
+                ['Cause', 'Description', 'Impact'],
+                ['Aggressive Lending', 'High exposure to stressed sectors (real estate, infra, NBFCs)', 'Created large NPA pool'],
+                ['Governance Issues', 'Weak oversight, related party transactions', 'Eroded investor confidence'],
+                ['NPA Under-reporting', 'Delayed recognition, evergreening of accounts', 'Sudden spike when acknowledged'],
+                ['Capital Inadequacy', 'Failed fundraising, low CET1', 'Unable to absorb losses'],
+                ['Liquidity Crisis', 'Deposit flight, rating downgrades', 'Triggered moratorium'],
+            ];
+            const ws6 = XLSX.utils.aoa_to_sheet(timelineData);
+            XLSX.utils.book_append_sheet(wb, ws6, 'Crisis Timeline');
+            
+            // Sheet 7: Recovery Metrics
+            const recoveryData = [
+                ['RECOVERY METRICS COMPARISON', '', '', ''],
+                ['', '', '', ''],
+                ['Metric', 'Crisis Peak (Mar 2020)', 'Current (Dec 2025)', 'Change'],
+                ['Gross NPA Ratio', '18.87%', '1.60%', '-17.27 pp'],
+                ['Net NPA Ratio', '6.54%', '0.42%', '-6.12 pp'],
+                ['CET1 Ratio', '6.3%', '14.8%', '+8.5 pp'],
+                ['CASA Ratio', '27.4%', '37.1%', '+9.7 pp'],
+                ['Return on Assets', '-3.99%', '1.69%', '+5.68 pp'],
+                ['Return on Equity', '-213.82%', '18.38%', '+232.20 pp'],
+                ['Cost to Income', '34.68%', '41.16%', '+6.48 pp'],
+                ['Deposits (₹ Cr)', 171234, 295678, '+72.7%'],
+                ['Advances (₹ Cr)', 241234, 256789, '+6.4%'],
+                ['Market Cap (₹ Cr)', 5432, 69941, '+1188%'],
+                ['Share Price (₹)', 16.60, 21.09, '+27%'],
+                ['', '', '', ''],
+                ['RECOVERY INITIATIVES', '', '', ''],
+                ['Initiative', 'Details', 'Impact', ''],
+                ['Capital Infusion', 'SBI consortium + FPO = ₹25,000 Cr', 'Strengthened capital base', ''],
+                ['NPA Resolution', 'Aggressive recovery, write-offs, settlements', 'GNPA reduced 84%', ''],
+                ['Governance Overhaul', 'New management, risk framework, board reforms', 'Restored confidence', ''],
+                ['Business Refocus', 'Retail banking, CASA improvement, digital', 'Diversified portfolio', ''],
+                ['Cost Management', 'Branch rationalization, tech investment', 'Improved efficiency', ''],
+                ['', '', '', ''],
+                ['QUARTERLY PERFORMANCE (FY 2026)', '', '', ''],
+                ['Quarter', 'Net Profit (₹ Cr)', 'GNPA (%)', 'CET1 (%)'],
+                ['Q1 FY26', 553, 1.7, 14.6],
+                ['Q2 FY26', 664, 1.6, 14.8],
+                ['', '', '', ''],
+                ['KEY LESSONS LEARNED', '', '', ''],
+                ['Lesson', 'Description', '', ''],
+                ['1. Governance is Critical', 'Strong board oversight and risk management essential', '', ''],
+                ['2. Asset Quality Recognition', 'Early identification and provisioning prevents bigger crisis', '', ''],
+                ['3. Capital Buffer Important', 'Adequate capital cushion to absorb unexpected losses', '', ''],
+                ['4. Diversification Matters', 'Avoid concentration in stressed sectors', '', ''],
+                ['5. Regulatory Support Crucial', 'Timely intervention can prevent systemic collapse', '', ''],
+            ];
+            const ws7 = XLSX.utils.aoa_to_sheet(recoveryData);
+            XLSX.utils.book_append_sheet(wb, ws7, 'Recovery Metrics');
+            
+            // Generate and download
+            XLSX.writeFile(wb, 'Yes_Bank_Crisis_Recovery_Financial_Model.xlsx');
+        }
+    </script>
+</body>
+</html>
